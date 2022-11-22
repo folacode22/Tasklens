@@ -37,7 +37,7 @@ exports.Register = async(req,res)=>{
           token: (await crypto).randomBytes(32).toString('hex')
         }).save()
         const message = `<p>verify your email address to complete the signup and login of this account</p></br><p>
-this link b>expire in 5min</p><p>click<a href=${process.env.BASE_URL}/user/verify/${client.id}/${token.token}>here</a></p>`;
+this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client.id}/${token.token}>here</a></p>`;
      const mail = await sendEmail(client.email, "Verify Email", message);
             
 return res.status(201).json({client,token ,mail, message:"user registration successful"
@@ -145,7 +145,7 @@ exports.ForgotPassword = async (req,res)=>{
          }).save();
      }
 
-     const link = `<p>click <a href="${process.env.BASE_URL}/password-reset/${user._id}/${token.token}">here</a> to reset your password</p>`;
+     const link = `<p>click <a href="${process.env.BASIC_URL}/user/password-reset/${user._id}/${token.token}">here</a> to reset your password</p>`;
      await sendEmail(user.email, "Password reset", link);
 
      res.send("password reset link sent to your email account");

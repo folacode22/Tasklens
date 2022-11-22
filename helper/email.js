@@ -8,7 +8,7 @@ const sendEmail = async (email, subject, html) => {
        port: 587,
        secure: true,
        auth: {
-         user: process.env.USER,
+         user: process.env.ADMIN,
          pass: process.env.PASS,
        },
      });
@@ -17,7 +17,7 @@ const sendEmail = async (email, subject, html) => {
        from: process.env.USER,
        to: email,
        subject: subject,
-       text: text,
+       html: html,
      });
      console.log("email sent sucessfully");
    } catch (error) {
