@@ -20,9 +20,9 @@ exports.Register = async(req,res)=>{
          })
          
         }
-        // const userExist = await User.findOne({ email:email });
-        //  if (userExist)
-        //      return res.status(400).send("user with given email already exist");
+        const userExist = await User.findOne({ email:email });
+         if (userExist)
+             return res.status(400).send("user with given email already exist");
         const salt = await bcrypt.genSalt(10);
         const hashPass = await bcrypt.hash(password, salt);
         const client  = await User.create({
@@ -51,7 +51,7 @@ return res.status(201).json({client,token ,mailer, message:"user registration su
 
 exports.Verification = async (req,res)=>{
   try {
-    const user = await User.findOne({ _id: req.params.id });
+    const user = await User.findOne({ UserId: req.params.UserId });
     if (!user) return res.status(400).send("Invalid link");
 
     const token = await Verify.findOne({
@@ -103,7 +103,7 @@ exports.LogIn = async (req, res) => {
  
      // if user password is correct tokenize the payload
      const payload = {
-       _id: existingUser._id,
+       _id: existingUser.UserId,
      };
  
      // tokenize your payload with a secret key to create an access token
@@ -129,25 +129,28 @@ exports.LogIn = async (req, res) => {
 exports.ForgotPassword = async (req,res)=>{
   try {
   
-     const user = await User.findOne({ email:email });
-     if (!user)
+     const existingUser = await User.findOne({ email:email });
+     if (!existingUser)
          return res.status(400).send("user with given email doesn't exist");
 
-     let token = await Token.findOne({ userId: user._id });
+     let token = await Token.findOne({ userId: existingUser.userId });
      if (!token) {
          token = await new Token({
-             userId: user._id,
+             userId: existingUser.userId,
              token: crypto.randomBytes(32).toString("hex"),
          }).save();
      }
 
-     const link = `<p>click <a href="${process.env.BASIC_URL}/user/password-reset/${user._id}/${token.token}">here</a> to reset your password</p>`;
-     await sendEmail(user.email, "Password reset", link);
+     const link = `<p>click <a href="${process.env.BASIC_URL}/user/password-reset/${existingUser.userId}/${token.token}">here</a> to reset your password</p>`;
 
-     res.send("password reset link sent to your email account");
+     const mailer = await sendEmail(existingUser.email, "Password reset", link);
+
+     return res.status(201).json({existingUser,token ,mailer, message:"password reset link sent to your email account"})
+     
  } catch (error) {
-     res.send("An error occured");
-     console.log(error);
+  return res
+  .status(500)
+  .json({ error: error.message, message: "internal server error" });
  }
 }
 
