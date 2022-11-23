@@ -36,7 +36,7 @@ exports.Register = async(req,res)=>{
           token: (await crypto).randomBytes(32).toString('hex')
         }).save()
         const message = `<p>verify your email address to complete the signup and login of this account</p></br><p>
-this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${userId}/${token.token}>here</a></p>`;
+this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client._id}/${token.token}>here</a></p>`;
      const mailer = await sendEmail(client.email, "Verify Email", message);
             
 return res.status(201).json({client,token ,mailer, message:"user registration successful"
@@ -51,17 +51,17 @@ return res.status(201).json({client,token ,mailer, message:"user registration su
 
 exports.Verification = async (req,res)=>{
   try {
-    const user = await User.findOne({ UserId: req.params.UserId });
-    if (!user) return res.status(400).send("Invalid link");
+    const user = await User.findOne({ UserId: req.params._id });
+    if (!user){return res.status(400).send("Invalid link")} 
 
     const token = await Verify.findOne({
-      userId: user.userId,
+      userId: user._id,
       token: req.params.token,
     });
-    if (!token) return res.status(400).send("Invalid link");
+    if (!token) {return res.status(400).send("Invalid link")};
 
-    await User.updateOne({ _id: user._id, verified: true });
-    await Verify.findByIdAndRemove(token._id);
+    await User.updateOne({ id: user._id, verified: true });
+    await Verify.findByIdAndRemove(token.id);
 
     res.send("email verified sucessfully");
 
