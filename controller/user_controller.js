@@ -36,7 +36,7 @@ exports.Register = async(req,res)=>{
           token: (await crypto).randomBytes(32).toString('hex')
         }).save()
         const message = `<p>verify your email address to complete the signup and login of this account</p></br><p>
-this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client.id}/${token.token}>here</a></p>`;
+this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${userId}/${token.token}>here</a></p>`;
      const mailer = await sendEmail(client.email, "Verify Email", message);
             
 return res.status(201).json({client,token ,mailer, message:"user registration successful"
@@ -55,7 +55,7 @@ exports.Verification = async (req,res)=>{
     if (!user) return res.status(400).send("Invalid link");
 
     const token = await Verify.findOne({
-      userId: user._id,
+      userId: user.userId,
       token: req.params.token,
     });
     if (!token) return res.status(400).send("Invalid link");
