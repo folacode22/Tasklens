@@ -37,9 +37,9 @@ exports.Register = async(req,res)=>{
         }).save()
         const message = `<p>verify your email address to complete the signup and login of this account</p></br><p>
 this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client.id}/${token.token}>here</a></p>`;
-     const mail = await sendEmail(client.email, "Verify Email", message);
+     const mailer = await sendEmail(client.email, "Verify Email", message);
             
-return res.status(201).json({client,token ,mail, message:"user registration successful"
+return res.status(201).json({client,token ,mailer, message:"user registration successful"
 
 })
 }catch(error){
