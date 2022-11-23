@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 const User = require('../models/user')
 const nodemailer = require('nodemailer');
-//const  {v4: uuidv4} = require('uuid');
 const sendEmail = require("../helper/email.js");
 const Verify = require("../models/verify");
 const Token = require("../models/forgot");
@@ -129,10 +128,7 @@ exports.LogIn = async (req, res) => {
 
 exports.ForgotPassword = async (req,res)=>{
   try {
-    //  const schema = Joi.object({ email: Joi.string().email().required() });
-    //  const { error } = schema.validate(req.body);
-    //  if (error) return res.status(400).send(error.details[0].message);
-
+  
      const user = await User.findOne({ email:email });
      if (!user)
          return res.status(400).send("user with given email doesn't exist");
@@ -157,9 +153,6 @@ exports.ForgotPassword = async (req,res)=>{
 
 exports.NewPassword = async (req,res)=>{
   try {
-    // const schema = Joi.object({ password: Joi.string().required() });
-    // const { error } = schema.validate(req.body);
-    // if (error) return res.status(400).send(error.details[0].message);
 
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(400).send("invalid link or expired");
@@ -190,6 +183,3 @@ exports.NewPassword = async (req,res)=>{
 
 
 
- exports.DashBoard = async ()=>{
-
- }
