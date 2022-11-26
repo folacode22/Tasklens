@@ -9,9 +9,6 @@ app.use(bodyParser());
 connectDB()
 port = process.env.PORT
 
-// set view engine
-
-
 
 
 app.use("/api/user",userRoutes);

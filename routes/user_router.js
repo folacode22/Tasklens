@@ -6,6 +6,11 @@ router.post('/signup',Register);
 router.get('/verify/:userId/:token',Verification);
 router.post('/login',LogIn);
 
+router.get("/logout", (req, res) => {
+   req.logIn= false;
+   res.redirect("/");
+ });
+
 router.post('/password-reset',ForgotPassword )
 router.post('/password-reset/:id/:token',NewPassword )
 
