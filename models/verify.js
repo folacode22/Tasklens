@@ -9,7 +9,7 @@ const verifySchema = new mongoose.Schema({
    token:{
       type:String,
       required:true,
-      expires:'2000000000000',
+     
    }
 })
 const Verify = mongoose.model('verify',verifySchema);

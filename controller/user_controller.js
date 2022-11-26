@@ -33,7 +33,7 @@ exports.Register = async(req,res)=>{
         })
         const token = await new Verify({
           userId: client._id,
-          token: (await crypto).randomBytes(32).toString('hex')
+          token: crypto.randomBytes(32).toString('hex')
         }).save()
         const message = `<p>verify your email address to complete the signup and login of this account</p></br><p>
 this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client._id}/${token.token}>here</a></p>`;
@@ -52,16 +52,16 @@ return res.status(201).json({client,token ,mailer, message:"user registration su
 exports.Verification = async (req,res)=>{
   try {
     const user = await User.findOne({ UserId: req.params._id });
-    if (!user){return res.status(400).send("Invalid link")} 
+    if (!user){return res.status(400).send("user not found ")} 
 
-    const token = await Verify.findOne({
-      userId: user._id,
+    const newVer = await Verify.findOne({
+      userId: req.params.userId,
       token: req.params.token,
     });
-    if (!token) {return res.status(400).send("Invalid link")};
+    if (!newVer) {return res.status(400).send("Invalid link")};
 
     await User.updateOne({ id: user._id, verified: true });
-    await Verify.findByIdAndRemove(token.id);
+    await Verify.findByIdAndRemove(newVer.id);
 
     res.send("email verified sucessfully");
 
@@ -161,7 +161,7 @@ exports.NewPassword = async (req,res)=>{
     if (!user) return res.status(400).send("invalid link or expired");
 
     const token = await Token.findOne({
-        userId: user._id,
+        userId: req.params.userId,
         token: req.params.token,
     });
     if (!token) return res.status(400).send("Invalid link or expired");
