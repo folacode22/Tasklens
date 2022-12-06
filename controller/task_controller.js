@@ -7,7 +7,7 @@ exports.newTask = async (req, res)=> {
    // check if user exist in database
   const user = await User.findOne({ userId: id });
    const {
-    userId,title,description,completed,dueDate,taskList,notification
+    userId,title,description,completed,taskList
 } =req.body;
 try {
  
@@ -17,8 +17,7 @@ try {
        description,
        taskList,
        completed,
-       dueDate,
-       notification,
+       
        
       
 
