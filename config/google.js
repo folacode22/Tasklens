@@ -20,7 +20,7 @@ passport.use(
       // options for google strategy
       clientID: keys.google.clientID,
       clientSecret: keys.google.clientSecret,
-      callbackURL: "http://localhost:1919/auth/google/redirect",
+      callbackURL: "https://taslens.onrender.com/auth/google/redirect",
     },
     (accessToken, refreshToken, profile, done) => {
    
