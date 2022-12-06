@@ -128,24 +128,36 @@ exports.LogIn = async (req, res) => {
 
 exports.ForgotPassword = async (req,res)=>{
   try {
-  
-     const existingUser = await User.findOne({ email:email });
-     if (!existingUser)
+//   const email = req.body;
+//      const user = await User.findOne({ email });
+//      if (!user)
+//  {return res.status(400).send("user with given email doesn't exist")}
+
+//      let token = await Token.findOne({ userId: user.userId });
+//      if (!token) {
+//          token = await new Token({
+//              userId: user.userId,
+//              token: crypto.randomBytes(32).toString("hex"),
+//          }).save();
+//      }
+
+     const user = await User.findOne({ email: req.body.email });
+     if (!user)
          return res.status(400).send("user with given email doesn't exist");
 
-     let token = await Token.findOne({ userId: existingUser.userId });
+     let token = await Token.findOne({ userId: user._id });
      if (!token) {
          token = await new Token({
-             userId: existingUser.userId,
+             userId: user._id,
              token: crypto.randomBytes(32).toString("hex"),
          }).save();
      }
 
-     const link = `<p>click <a href="${process.env.BASIC_URL}/user/password-reset/${existingUser.userId}/${token.token}">here</a> to reset your password</p>`;
+     const link = `<p>click <a href="${process.env.BASIC_URL}/user/password-reset/${user.userId}/${token.token}">here</a> to reset your password</p>`;
 
-     const mailer = await sendEmail(existingUser.email, "Password reset", link);
+     const mailer = await sendEmail(user.email, "Password reset", link);
 
-     return res.status(201).json({existingUser,token ,mailer, message:"password reset link sent to your email account"})
+     return res.status(201).json({user,token ,mailer, message:"password reset link sent to your email account"})
      
  } catch (error) {
   return res

@@ -1,18 +1,21 @@
 const mongoose = require("mongoose");
-const User = require("./user")
-const dashBoardSchema = new mongoose.Schema({
-   userId: {
+
+const profileSchema = new mongoose.Schema({
+ 
+   task: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:"User",
+      ref:"task",
    },
-   picture:{
-      type:String,
-      required:true,
-   }
+  upcoming:{
+   type:Boolean
+  },
+  priority:{
+   type:Boolean
+  },
 },{
    collection: 'profile',
    timestamps: true,
    versionKey: false,});
 
-   const DashBoard = mongoose.model('Verification', dashBoardSchema);
-module.exports = DashBoard; 
+   const Profile = mongoose.model('profile', profileSchema );
+module.exports = Profile; 

@@ -2,21 +2,25 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const userSchema = new mongoose.Schema(
   {
-    
-    name: { type: String, required: [true, "name field is required"] },
+    googleId:{
+      type:String
+    },
+    name: { type: String, 
+    //required: [ "name field is required"] 
+  },
     email: {
       type: String,
-      required: [true, "email field is required"],
-      // trim: true,
-      // validate(value) {
-      //   if (!validator.isEmail(value)) {
-      //     throw new Error("Email is invalid");
-      //   }
-      // },
+      //required: [ "email field is required"],
+      trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Email is invalid");
+        }
+      },
     },
     password: {
       type: String,
-      required: [true, "password field is required"],
+     // required: [ "password field is required"],
       minLength: 8,
       trim: true,
       validate(value) {

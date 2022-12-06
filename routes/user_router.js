@@ -12,7 +12,7 @@ router.get("/logout", (req, res) => {
  });
 
 router.post('/password-reset',ForgotPassword )
-router.post('/password-reset/:id/:token',NewPassword )
+router.post('/password-reset/:userId/:token',NewPassword )
 
 
 module.exports = router
