@@ -6,6 +6,13 @@ const profileSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref:"task",
    },
+ Schedule:{
+      type:Date
+      
+         },
+         notification:{
+            type:String,
+         },
   upcoming:{
    type:Boolean
   },

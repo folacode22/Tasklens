@@ -20,13 +20,7 @@ type:Boolean,
 default:false,
 required:true
    },
-   dueDate:{
-type:Date
 
-   },
-   notification:{
-      type:String,
-   },
    taskList:{
        type:String,
       enum:["Default","Personal","Shopping","Wishlist","Work"] ,
