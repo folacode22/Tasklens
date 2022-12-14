@@ -24,7 +24,7 @@ const sendEmail = async (email, subject, html) => {
       }
     })
     await smtpTransport.sendMail({
-      from: process.env.USER,
+      from: process.env.Admin,
       to: email,
       subject: subject,
       html: html,

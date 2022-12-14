@@ -36,7 +36,7 @@ exports.Register = async(req,res)=>{
           token: crypto.randomBytes(32).toString('hex')
         }).save()
         const message = `<p>verify your email address to complete the signup and login of this account</p></br><p>
-this link b>expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client._id}/${token.token}>here</a></p>`;
+this link expire in 5min</p><p>click<a href=${process.env.BASIC_URL}/user/verify/${client._id}/${token.token}>here</a></p>` ;
      const mailer = await sendEmail(client.email, "Verify Email", message);
             
 return res.status(201).json({client,token ,mailer, message:"user registration successful"
@@ -128,18 +128,6 @@ exports.LogIn = async (req, res) => {
 
 exports.ForgotPassword = async (req,res)=>{
   try {
-//   const email = req.body;
-//      const user = await User.findOne({ email });
-//      if (!user)
-//  {return res.status(400).send("user with given email doesn't exist")}
-
-//      let token = await Token.findOne({ userId: user.userId });
-//      if (!token) {
-//          token = await new Token({
-//              userId: user.userId,
-//              token: crypto.randomBytes(32).toString("hex"),
-//          }).save();
-//      }
 
      const user = await User.findOne({ email: req.body.email });
      if (!user)

@@ -1,6 +1,9 @@
+const schedule = require('node-schedule');
+//const pushNotification = require("../utils/notification");
 const User = require('../models/user');
 const Task = require('../models/task');
-const Profile = require('../models/dashboard');
+const Dash = require('../models/dashboard');
+
 
 exports.newTask = async (req, res)=> {
   const id = req.user._id;
@@ -9,6 +12,7 @@ exports.newTask = async (req, res)=> {
    const {
     userId,title,description,completed,taskList
 } =req.body;
+const {taskId,due_Date,notification,upcoming,priority} = req.body;
 try {
  
    const task = await Task.create({
@@ -16,25 +20,26 @@ try {
        title,
        description,
        taskList,
-       completed,
-       
-       
-      
+       completed:false,
 
    });
-   const addTask = await task.save();
+   
+   const dashboard = await new Dash({
+    taskId: task._id,
+    due_Date,
+    notification,
+    upcoming:false,
+    priority:false,
+   }).save()
    return res.status(201).json({
        message:'new note added successfully',
-       addTask,
+       task,dashboard
    })
 } catch (error) {
   return res.status(500).json({ message: error.message })
 };
 }
 
-// exports.bulkTask = async (req,res,next)=>{
-
-// };
 
 
 exports.updateTask = async (req, res) => {
@@ -42,7 +47,7 @@ exports.updateTask = async (req, res) => {
        const id = req.params._id;
        const change = await
        Task.findOneAndUpdate(
-           {_id:id},
+           {id:id},
            {completed:true},
            {new:true}
        );
@@ -66,7 +71,7 @@ exports.viewTask = async (req,res)=>{
 
    try {
     const id = req.params.id;
-      const task = await Task.findOne({id});
+      const task = await Task.findOne({id:id});
       return res.status(200).json(task); 
    } catch (error) {
       return res.status(500).json({
@@ -138,7 +143,7 @@ exports.deleteTask  = async  (req, res) => {
        
          { new: true }
        );
-       return res.status(200).json(del_note);
+       return res.status(200).json(del_task);
    } catch (error) {
        console.log(error);
        return res.status(500).json({ error: error.message });
@@ -151,8 +156,8 @@ exports.deleteTask  = async  (req, res) => {
 // delete all Task
 exports.removeAllTask = async (req,res,)=>{
 try{
-const data = await Task.deleteMany()
-return res.status(200).json({message:" all task as been delete"})
+const data = await Task.deleteMany();
+return res.status(200).json({data,message:" all task as been delete"})
 }catch(error){
   console.log(error);
   return res.status(500).json({ error: error.message });
@@ -161,54 +166,4 @@ return res.status(200).json({message:" all task as been delete"})
 
 
 
-// upcoming
-exports.dashboard = async (req,res)=>{
-  const id =  req.task._id;
-  const task = await Task.findOne({taskId: id});
-  const {taskId,upcoming,priority} = req.body;
-  try{
-    const dash = await Profile.create({
-      taskId:task,
-      upcoming,
-      priority
-    });
-    const addDash = await dash.save();
-   return res.status(201).json({
-       message:'new profile added successfully',
-       addDash ,})
-  }catch(error){
-    return res.status(500).json({ message: error.message })
-  }
-}
-
-exports.upComing = async (req,res)=>{
-  const id  = req.params._id;
-  try{
-  const make = await Profile.findOneAndUpdate(
-    {_id:id},
-    {upComing:true},
-    {new:true}
-  );
-  return res.status(200).json(make);
-  }catch(error){
-    return res.status(500).json({
-      message: 'Internal Server error',
-    })
-}};
-
-exports.priority = async (req,res)=>{
-const id  = req.params._id;
-try{
-const make = await Profile.findOneAndUpdate(
-  {_id:id},
-  {priority:true},
-  {new:true}
-);
-return res.status(200).json(make);
-}catch(error){
-  return res.status(500).json({
-    message: 'Internal Server error',
-  })
-}
-}
 

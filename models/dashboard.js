@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 
-const profileSchema = new mongoose.Schema({
+const dashSchema = new mongoose.Schema({
  
-   task: {
+   taskId: {
       type: mongoose.Schema.Types.ObjectId,
       ref:"task",
    },
- Schedule:{
-      type:Date
-      
+   due_Date:{
+      type:String
          },
          notification:{
             type:String,
@@ -20,9 +19,9 @@ const profileSchema = new mongoose.Schema({
    type:Boolean
   },
 },{
-   collection: 'profile',
+   collection: 'dash',
    timestamps: true,
    versionKey: false,});
 
-   const Profile = mongoose.model('profile', profileSchema );
-module.exports = Profile; 
+   const Dash = mongoose.model('dash', dashSchema );
+module.exports = Dash ; 

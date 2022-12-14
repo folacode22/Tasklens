@@ -9,9 +9,7 @@ const{newTask,
    updateTask,
    deleteTask,
    removeAllTask,
-   dashboard,
-   upComing,
-   priority}= require('../controller/task_controller')
+}= require('../controller/task_controller')
 
 router.post('/create',Auth,newTask);
 router.get('/view/:id',viewTask);
@@ -21,10 +19,8 @@ router.put('/update/:id',updateTask);
 router.delete('/delete/:id',Auth,deleteTask);
 router.delete('/delete/all',Auth,removeAllTask);
 
-router.post('/create',dashboard);
-router.put('/upcoming/:id',upComing);
-router.put('/priority/:id',priority);
+
  
 
 
-module.exports = router
+module.exports = router;

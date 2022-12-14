@@ -8,14 +8,14 @@ const authRoutes = require("./routes/auth_router");
 const profileRoutes = require("./routes/profile_routes");
 const userRoutes = require('./routes/user_router');
 const taskRoutes = require('./routes/task_router');
-
+const dashboard = require('./routes/dashboard');
 //google user content
 require("./config/google");
 const keys = require("./config/key");
 
 const app = express();
-const bodyParser = require('express').json
-app.use(bodyParser());
+app.use(express.json());
+app.use(express.urlencoded({extended : false}));
 app.use(cors());
 // set view engine
 app.set("view engine", "ejs");
@@ -34,6 +34,7 @@ port = process.env.PORT;
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use("/api/dash", dashboard);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/user",userRoutes);
@@ -46,6 +47,7 @@ app.get('/',(req,res)=>{
 // app.get("/", (req, res) => {
 //    res.render("home", { user: req.user });
 //  });
+
  //404 page
 app.all('*', (req, res) => {
    res.status(404).json({ message: '👋🤚👋👋👋🤚oops page not found' });
