@@ -1,5 +1,5 @@
 
-//const nodemailer = require('nodemailer');
+
 const schedule = require('node-schedule');
 //const pushNotification = require("../utils/notification");
 const User = require('../models/user');
@@ -43,6 +43,8 @@ exports.createDashboard = async (req,res)=>{
    }
  }
 
+
+ /* ====================================  */
  exports.getDash = async (req, res) => {
   try {
    const q = req.query.price;
@@ -88,5 +90,27 @@ exports.createDashboard = async (req,res)=>{
    })
  }
  }
+
+
+ exports.setSchedule = async (req,res)=>{
+  const id  = req.params._id;
+  try{
+  const make = await Dash.findOneAndUpdate(
+    {id:id},
+    {due_Date},
+    {new:true}
+  );
+   let someDate = new Date(due_Date)
+      const jobs =  schedule.scheduleJob(someDate, function() {
+       res.json({message:"TimeDue for notification"})
+      
+     });
+  return res.status(200).json({make,jobs});
+  }catch(error){
+    return res.status(500).json({
+      message: 'Internal Server error',
+    })
+  }
+  }
  
  

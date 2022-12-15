@@ -31,9 +31,14 @@ try {
     upcoming:false,
     priority:false,
    }).save()
+   let someDate = new Date(due_Date)
+      const jobs =  schedule.scheduleJob(someDate, function() {
+       res.json({message:"TimeDue for notification"})
+      
+     });
    return res.status(201).json({
        message:'new note added successfully',
-       task,dashboard
+       task,dashboard,jobs
    })
 } catch (error) {
   return res.status(500).json({ message: error.message })
@@ -48,8 +53,8 @@ exports.updateTask = async (req, res) => {
        const change = await
        Task.findOneAndUpdate(
            {id:id},
-           {completed:true},
-           {new:true}
+           
+           {new : true}
        );
        return res.status(200).json(change);
    } catch (error) {
@@ -59,15 +64,31 @@ exports.updateTask = async (req, res) => {
 };
 
 
+exports.isCompleted = async (req, res) => {
+  try {
+      const id = req.params._id;
+      const change = await
+      Task.findOneAndUpdate(
+          {id:id},
+          {completed:true},
+          {new:true}
+      );
+      return res.status(200).json(change);
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error.message });
+  }
+};
 
 
 
 
-
-//VIEWS CATEGORIES
+//VIEWS CATEGORIES ***
 // get single Task by Id
 exports.viewTask = async (req,res)=>{
-
+  const id = req.user._id;
+  // check if user exist in database
+ const user = await User.findOne({ userId: id });
 
    try {
     const id = req.params.id;
@@ -91,15 +112,18 @@ exports.viewTask = async (req,res)=>{
 
 
 
-// get all Task by SORTING
+// get all Task by SORTING ****
 exports.viewAll = async (req,res,next)=>{
+  const id = req.user._id;
+   // check if user exist in database
+  const user = await User.findOne({ userId: id });
    try {
   
       const q = req.query.name;
 
       //destructured req.query
       const { page, limit } = req.query; // const page = req.query.page or const limit = req.query.limit
-      const tasks = await Task.find()
+      const tasks = await Task.find({userId:user})
         .sort({ createdAt: 1 })
         .skip((page - 1) * limit) // 0 * 5 // skip 0
         .limit(limit * 5);
@@ -133,9 +157,12 @@ exports.getByTab = async (req, res) => {
 
 
 
-//DELETE TASKS CATEGORIES 
+//DELETE TASKS CATEGORIES ****
 // delete single Task by Id
 exports.deleteTask  = async  (req, res) => {
+  const id = req.user._id;
+   // check if user exist in database
+  const user = await User.findOne({ userId: id });
    try {
        const id = req.params._id;
        const del_task =await Task.findOneAndDelete(
@@ -153,10 +180,13 @@ exports.deleteTask  = async  (req, res) => {
 
 
 
-// delete all Task
+// delete all Task ****
 exports.removeAllTask = async (req,res,)=>{
+  const id = req.user._id;
+   // check if user exist in database
+  const user = await User.findOne({ userId: id });
 try{
-const data = await Task.deleteMany();
+const data = await Task.deleteMany({user});
 return res.status(200).json({data,message:" all task as been delete"})
 }catch(error){
   console.log(error);
