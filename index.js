@@ -43,7 +43,7 @@ app.use("/api/task",taskRoutes);
 app.get('/',(req,res)=>{
   return res.status(200).json({ message: 'home page ' });
 })
-// create home route
+//create home route
 // app.get("/", (req, res) => {
 //    res.render("home", { user: req.user });
 //  });

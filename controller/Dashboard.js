@@ -63,7 +63,7 @@ exports.createDashboard = async (req,res)=>{
    try{
    const mark = await Dash.findOneAndUpdate(
      {id:id},
-     {upComing:true},
+     {upcoming:true},
      {new:true}
    );
    return res.status(200).json(mark);
