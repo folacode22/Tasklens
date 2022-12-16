@@ -45,10 +45,10 @@ try {
 
 exports.updateTask = async (req, res) => {
    try {
-       const id = req.params._id;
+       const id = req.params.id;
        const change = await
        Task.findOneAndUpdate(
-           {id:id},
+           {_id:id},
            
            {new : true}
        );
@@ -62,10 +62,10 @@ exports.updateTask = async (req, res) => {
 
 exports.isCompleted = async (req, res) => {
   try {
-      const id = req.params._id;
+      const id = req.params.id;
       const change = await
       Task.findOneAndUpdate(
-          {id:id},
+          {_id:id},
           {completed:true},
           {new:true}
       );
@@ -82,13 +82,13 @@ exports.isCompleted = async (req, res) => {
 //VIEWS CATEGORIES ***
 // get single Task by Id
 exports.viewTask = async (req,res)=>{
-  const id = req.user._id;
+  const id = req.user.id;
   // check if user exist in database
  const user = await User.findOne({ userId: id });
 
    try {
     const id = req.params.id;
-      const task = await Task.findOne({id:id});
+      const task = await Task.findOne({_id:id});
       return res.status(200).json(task); 
    } catch (error) {
       return res.status(500).json({
@@ -119,7 +119,7 @@ exports.viewAll = async (req,res,next)=>{
 
       //destructured req.query
       const { page, limit } = req.query; // const page = req.query.page or const limit = req.query.limit
-      const tasks = await Task.find({userId:user})
+      const tasks = await Task.find({user})
         .sort({ createdAt: 1 })
         .skip((page - 1) * limit) // 0 * 5 // skip 0
         .limit(limit * 5);
@@ -160,9 +160,9 @@ exports.deleteTask  = async  (req, res) => {
    // check if user exist in database
   const user = await User.findOne({ userId: id });
    try {
-       const id = req.params._id;
+       const id = req.params.id;
        const del_task =await Task.findOneAndDelete(
-         { Id: id },
+         { _id: id },
        
          { new: true }
        );
@@ -182,7 +182,7 @@ exports.removeAllTask = async (req,res,)=>{
    // check if user exist in database
   const user = await User.findOne({ userId: id });
 try{
-const data = await Task.deleteMany({user});
+const data = await Task.deleteMany({});
 return res.status(200).json({data,message:" all task as been delete"})
 }catch(error){
   console.log(error);
