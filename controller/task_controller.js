@@ -31,14 +31,10 @@ try {
     upcoming:false,
     priority:false,
    }).save()
-   let someDate = new Date(due_Date)
-      const jobs =  schedule.scheduleJob(someDate, function() {
-       res.json({message:"TimeDue for notification"})
-      
-     });
+   
    return res.status(201).json({
        message:'new note added successfully',
-       task,dashboard,jobs
+       task,dashboard
    })
 } catch (error) {
   return res.status(500).json({ message: error.message })
