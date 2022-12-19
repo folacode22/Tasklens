@@ -1,7 +1,7 @@
 ### task
 router.post('/create',Auth,newTask);
 router.get('/view/:id',viewTask);
-router.get('/tabs',getByTab );
+//router.get('/tabs',getByTab );
 router.get('/views',Auth,viewAll);
 router.put('/update/:id',updateTask);
 router.put('/completed/:id',isCompleted);

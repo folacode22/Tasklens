@@ -49,7 +49,7 @@ exports.createDashboard = async (req,res)=>{
   try {
    const q = req.query.price;
    const { page, limit } = req.query;
-   const tabs = await Dash.find()
+   const tabs = await Dash.find({user})
      .sort({ taskList: 1 })
      .skip((page - 1) * limit)
      .limit(limit * 5);
