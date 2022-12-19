@@ -33,10 +33,10 @@ try {
     priority:false,
    }).save()
    let someDate = new Date(due_Date)
-      // const jobs =  schedule.scheduleJob(someDate, function() {
-      //  res.json({message:"TimeDue for notification"})
+      const jobs =  schedule.scheduleJob(someDate, function() {
+       res.json({message:"TimeDue for notification"})
       
-    // });
+     });
    return res.status(201).json({
        message:'new note added successfully',
        task,dashboard
@@ -50,10 +50,10 @@ try {
 
 exports.updateTask = async (req, res) => {
    try {
-       const id = req.params._id;
+       const id = req.params.id;
        const change = await
        Task.findOneAndUpdate(
-           {id:id},
+           {_id:id},
            
            {new : true}
        );
@@ -67,10 +67,10 @@ exports.updateTask = async (req, res) => {
 
 exports.isCompleted = async (req, res) => {
   try {
-      const id = req.params._id;
+      const id = req.params.id;
       const change = await
       Task.findOneAndUpdate(
-          {id:id},
+          {_id:id},
           {completed:true},
           {new:true}
       );
@@ -87,9 +87,9 @@ exports.isCompleted = async (req, res) => {
 //VIEWS CATEGORIES ***
 // get single Task by Id
 exports.viewTask = async (req,res)=>{
-//   const id = req.user._id;
-//   // check if user exist in database
-//  const user = await User.findOne({ userId: id });
+  const id = req.user._id;
+  // check if user exist in database
+ const user = await User.findOne({ userId: id });
 
    try {
     const id = req.params.id;
@@ -187,7 +187,7 @@ exports.removeAllTask = async (req,res,)=>{
    // check if user exist in database
   const user = await User.findOne({ userId: id });
 try{
-const data = await Task.deleteMany({user});
+const data = await Task.deleteMany({});
 return res.status(200).json({data,message:" all task as been delete"})
 }catch(error){
   console.log(error);
