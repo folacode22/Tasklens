@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 const User = require('../models/user')
-const cloudinary = require('../utils/cloudinary');
+// const cloudinary = require('../utils/cloudinary');
 
 const nodemailer = require('nodemailer');
 const sendEmail = require("../helper/email.js");
@@ -22,7 +22,8 @@ exports.Register = async(req,res)=>{
          })
          
         }
-        const result = await cloudinary.uploader.upload(req.file.path);
+      //  const result = await cloudinary.uploader.upload(req.file.path);
+      
 
         const userExist = await User.findOne({ email:email });
          if (userExist)
@@ -33,7 +34,9 @@ exports.Register = async(req,res)=>{
          
          email,
          password:hashPass,
-         image:result.secure_url,
+         image,
+        // image:result.secure_url,
+
          verified:false,
         })
         const token = await new Verify({
