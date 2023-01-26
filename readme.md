@@ -1,3 +1,29 @@
+
+## Model for  User
+<!-- model work done -->
+- google id(auth userId from google)
+- id || userId(generate by mongoose middleware)
+- name (Full_name  of  the  )
+- email ()
+- password ()
+- 
+
+## Model for Task
+- mainTask 
+mainTitle
+mainDescription
+- subTask
+title
+description
+- completed
+- taskList
+- upcoming
+- priority
+
+
+
+
+
 ### task
 router.post('/create',Auth,newTask);
 router.get('/view/:id',viewTask);

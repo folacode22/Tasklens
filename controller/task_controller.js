@@ -1,45 +1,37 @@
-const schedule = require('node-schedule');
-//const pushNotification = require("../utils/notification");
+
 const User = require('../models/user');
 const Task = require('../models/task');
-const Dash = require('../models/dashboard');
+
 
 
 exports.newTask = async (req, res)=> {
   const id = req.user._id;
    // check if user exist in database
   const user = await User.findOne({ userId: id });
+  if(!user){
+    return res.status(404).json({message:"user does not exist in the database"})
+  }
    const {
-    userId,title,description,completed,taskList
+    userId,Title,Description,subTask,completed,purpose,upcoming,priority,startDate,endDate
 } =req.body;
-const {taskId,due_Date,notification,upcoming,priority} = req.body;
+
 try {
  
    const task = await Task.create({
     userId:user,
-       title,
-       description,
-       taskList,
-       completed:false,
-
+    Title,
+    Description,
+    subTask,
+    completed,
+    purpose,
+    upcoming,
+    priority,
+    startDate,
+    endDate
    });
-   
-   const dashboard = await new Dash({
-    userId:user,
-    taskId: task._id,
-    due_Date,
-    notification,
-    upcoming:false,
-    priority:false,
-   }).save()
-   let someDate = new Date(due_Date)
-      const jobs =  schedule.scheduleJob(someDate, function() {
-       res.json({message:"TimeDue for notification"})
-      
-     });
    return res.status(201).json({
        message:'new note added successfully',
-       task,dashboard
+       task
    })
 } catch (error) {
   return res.status(500).json({ message: error.message })
@@ -47,14 +39,24 @@ try {
 }
 
 
-
 exports.updateTask = async (req, res) => {
    try {
        const id = req.params.id;
+       const{ title,
+        description,
+        purpose,
+        completed,
+        upcoming,
+        priority} = req.body;
        const change = await
        Task.findOneAndUpdate(
            {_id:id},
-           
+           { title,
+            description,
+            purpose,
+            completed,
+            upcoming,
+            priority},
            {new : true}
        );
        return res.status(200).json(change);
@@ -82,18 +84,53 @@ exports.isCompleted = async (req, res) => {
 };
 
 
+exports.priority = async (req,res)=>{
+  const id  = req.params.id;
+  try{
+  const make = await Task.findOneAndUpdate(
+    {_id:id},
+  
+    {new:true}
+  );
+  return res.status(200).json(make);
+  }catch(error){
+    return res.status(500).json({
+      message: 'Internal Server error',
+    })
+  }
+  };
+ 
+ 
+exports.upComing = async (req,res)=>{
+  const id  = req.params.id;
+  try{
+  const mark = await Task.findOneAndUpdate(
+    {_id:id},
+    {upcoming:true},
+    {new:true}
+  );
+  return res.status(200).json(mark);
+  }catch(error){
+    return res.status(500).json({
+      message: 'Internal Server error',
+    })
+}};
 
+ 
 
 //VIEWS CATEGORIES ***
 // get single Task by Id
 exports.viewTask = async (req,res)=>{
   const id = req.user._id;
+  const Id = req.params.id;
+
+   try {   
   // check if user exist in database
  const user = await User.findOne({ userId: id });
-
-   try {
-    const id = req.params.id;
-      const task = await Task.findOne({_id:id});
+ if(!user){
+  return res.status(404).json({message:"user does not exist in the database"})
+};
+      const task = await Task.findOne({_id:Id});
       return res.status(200).json(task); 
    } catch (error) {
       return res.status(500).json({
@@ -104,7 +141,18 @@ exports.viewTask = async (req,res)=>{
 }
 
 
-
+// get all Task
+exports.getAllTask = async (req,res)=>{
+  const id = req.user._id;
+  try {
+     // check if user exist in database
+ const user = await User.findOne({ userId: id });
+    const tasks = await Task.find({user});
+    return res.status(200).json({message:"All task available", tasks})
+  } catch (error) {
+    
+  }
+}
 
 
 
@@ -114,7 +162,7 @@ exports.viewTask = async (req,res)=>{
 
 
 // get all Task by SORTING ****
-exports.viewAll = async (req,res,next)=>{
+exports.viewAllBySort = async (req,res,next)=>{
   const id = req.user._id;
    // check if user exist in database
   const user = await User.findOne({ userId: id });
@@ -137,23 +185,75 @@ exports.viewAll = async (req,res,next)=>{
 };
 
 
-//todo
-exports.getByTab = async (req, res) => {
+ 
+ exports.tasksByCategory = 
+  async(req,res)=>{
+    try {
+      const { purpose } = req.params;
+     const tasks = await Task.find({
+      purpose: purpose,
+     });
+     return res.status(200).json({
+         message: "task by category",
+         tasks,
+     });
+    } catch (error) {
+      console.log(error.message);
+    }
+     
+  }
+
+
+
+  //todo
+exports.getBySearch = async (req, res) => {
+  const {title, description, purpose} = req.body;
    try {
-    const q = req.query.price;
-    const { page, limit } = req.query;
-    const tabs = await Task.find()
-      .sort({ taskList: 1 })
-      .skip((page - 1) * limit)
-      .limit(limit * 3);
-    return res.status(200).json({ count: tabs.length, data: tabs });
+  
+  const tasks = await Task.find({
+    title:{
+      $regex: title,
+      $options: "i"
+    },
+    description:{
+      $regex: description,
+      $options: "i"
+    },
+    taskList:{
+      $regex: purpose,
+      $options: "i"
+    },
+  });
+  return res.status(200).json({
+    message:"Advance search",
+    tasks
+  });
    } catch (error) {
-     console.log(error.message);
+     console.log({message:"search function not working"});
    }
  };
 
 
-
+ //todo
+exports.getFilter = async (req,res) =>{
+  const q = req.query.taskList;
+  try{
+    const filters = req.query;
+const filterTask = await Task.filter(taskList =>{
+  let isValid = true;
+  for(key in filters){
+    console.log(key, taskList[key], filters[key])
+    isValid = isValid && taskList[key] == filters[key]
+  }
+return isValid;
+})
+return res.status(200).json({filterTask})
+  }
+  catch(error){
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+}
 
 
 
@@ -187,7 +287,7 @@ exports.removeAllTask = async (req,res,)=>{
    // check if user exist in database
   const user = await User.findOne({ userId: id });
 try{
-const data = await Task.deleteMany({});
+const data = await Task.deleteMany({user});
 return res.status(200).json({data,message:" all task as been delete"})
 }catch(error){
   console.log(error);

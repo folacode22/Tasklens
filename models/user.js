@@ -5,12 +5,10 @@ const userSchema = new mongoose.Schema(
     googleId:{
       type:String
     },
-    name: { type: String, 
-    //required: [ "name field is required"] 
-  },
+    
     email: {
       type: String,
-      //required: [ "email field is required"],
+      required: [true, "email field is required"],
       trim: true,
       // validate(value) {
       //   if (!validator.isEmail(value)) {
@@ -20,7 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-     // required: [ "password field is required"],
+     required: [true, "password field is required"],
       minLength: 8,
       trim: true,
       validate(value) {
@@ -29,9 +27,18 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    verified:{type:Boolean,
-   required:true},
-   
+
+    image:{
+type:String,
+required:[true,"image profile required"],
+    },
+
+   verified:{type:Boolean,
+   required:true}, 
+   form:{
+    type :String,
+    enum:['Personal','work','Education'],
+   }
   },
   {
     capped: {

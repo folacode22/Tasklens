@@ -1,7 +1,7 @@
 const passport = require("passport");
-const jwt = require("jsonwebtoken")
+//const jwt = require("jsonwebtoken")
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const keys = require("./key");
+//const keys = require("./key");
 const User = require("../models/user");
 
 passport.serializeUser((user, done) => {
@@ -18,8 +18,8 @@ passport.use(
   new GoogleStrategy(
     {
       // options for google strategy
-      clientID: keys.google.clientID,
-      clientSecret: keys.google.clientSecret,
+      clientID: process.env.clientID,
+      clientSecret: process.env.clientSecret,
       callbackURL: "https://taslens.onrender.com/auth/google/redirect",
     },
     // (accessToken, refreshToken, profile, done) => {

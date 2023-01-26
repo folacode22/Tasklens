@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require ("jsonwebtoken");
 
 exports.Auth = async (req, res, next) => {
   try {
@@ -7,10 +7,11 @@ exports.Auth = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ message: "Token Is missing" });
-    }
+      return res.status(401).json({ message: "Token Is missing"
+     })
+    };
 
-    const decoded = await jwt.verify(token, process.env.SECRET_KEY); 
+    const decoded =  jwt.verify(token, process.env.SECRET_KEY); 
     if (!decoded) {
       throw new Error();
     }

@@ -8,10 +8,10 @@ const authRoutes = require("./routes/auth_router");
 const profileRoutes = require("./routes/profile_routes");
 const userRoutes = require('./routes/user_router');
 const taskRoutes = require('./routes/task_router');
-const dashboard = require('./routes/dashboard');
+
 //google user content
 require("./config/google");
-const keys = require("./config/key");
+//const keys = require("./config/key");
 
 const app = express();
 app.use(express.json());
@@ -24,7 +24,8 @@ app.set("view engine", "ejs");
 app.use(
    cookieSession({
      maxAge: 24 * 60 * 60 * 1000,
-     keys: [keys.session.cookieKey],
+     keys:process.env.cookieKey,
+    //  keys: [keys.session.cookieKey],
    })
  );
 connectDB()
@@ -34,19 +35,18 @@ port = process.env.PORT;
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/api/dash", dashboard);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/user",userRoutes);
 app.use("/api/task",taskRoutes);
 
-app.get('/',(req,res)=>{
-  return res.status(200).json({ message: 'home page ' });
-})
+// app.get('/',(req,res)=>{
+//   return res.status(200).json({ message: 'home page ' });
+// })
 //create home route
-// app.get("/", (req, res) => {
-//    res.render("home", { user: req.user });
-//  });
+app.get("/", (req, res) => {
+   res.render("home", { user: req.user });
+ });
 
  //404 page
 app.all('*', (req, res) => {

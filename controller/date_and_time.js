@@ -1,3 +1,8 @@
+const Schedule = require('../models/schedule');
+const Task = require('../models/task');
+
+
+
 const months =[
    'January',
    'February',
@@ -35,11 +40,5 @@ console.log(date.getDate());
 console.log(date.getFullYear());
 console.log(date.getTime());
 
-const currentDate = async ()=>{
-   try{
-     const sentence = `${days[day]},${date.getDate()}, ${months[month]}, ${date.getFullYear()}`
-     console.log(currentDate)
-   }
-   
-   
-}
+
+
